@@ -1,2 +1,2 @@
 # eod-assistant
-Send End of day updates
+Send end of day updates
