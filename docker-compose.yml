@@ -1,0 +1,10 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.6.1
+    volumes:
+      -  /tmp/eod-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=eodassistant
