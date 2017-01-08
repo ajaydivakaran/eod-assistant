@@ -29,8 +29,7 @@ class EndOfDayItem(models.Model):
         return [contributor.name for contributor in self.contributors.all()]
 
     def __str__(self):
-        contributors = ", ".join(self.get_contributors())
-        return "eod item id '%s on %s by %s" % (self.story_id, self.done_date.strftime('%d, %b %Y'), contributors)
+        return self.story_id
 
 
 class DispatchRule(models.Model):
