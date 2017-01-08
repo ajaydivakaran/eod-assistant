@@ -36,6 +36,7 @@ class DispatchRule(models.Model):
     type = models.CharField(max_length=30)
     hour = models.IntegerField()
     minute = models.IntegerField()
+    team = models.ForeignKey(Team)
 
     def __str__(self):
         return "Rule %s: hour: %s minute: %s" % (self.type, self.hour, self.minute)
