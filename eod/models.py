@@ -24,6 +24,7 @@ class EndOfDayItem(models.Model):
     story_id = models.CharField(max_length=30)
     contributors = models.ManyToManyField(Contributor)
     created_date = models.DateTimeField('End of day item done date', auto_now=True)
+    team = models.ForeignKey(Team)
 
     def get_contributors(self):
         return [contributor.name for contributor in self.contributors.all()]

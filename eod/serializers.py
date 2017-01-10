@@ -22,8 +22,9 @@ class ContributorPrimaryKeyRelationSerializer(ContributorHyperlinkedRelationSeri
 class EndOfDayItemHyperlinkedRelationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = EndOfDayItem
-        fields = ('id', 'description', 'story_id', 'contributors', 'created_date')
+        fields = ('id', 'description', 'story_id', 'contributors', 'created_date', 'team')
 
 
 class EndOfDayItemPrimaryKeyRelationSerializer(EndOfDayItemHyperlinkedRelationSerializer):
-    contributors = serializers.PrimaryKeyRelatedField(queryset=Contributor.objects.all())
+    contributors = serializers.PrimaryKeyRelatedField(many=True, queryset=Contributor.objects.all())
+    team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all())
