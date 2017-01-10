@@ -17,11 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 
-from eod.views import TeamViewSet, ContributorViewSet
+from eod.views import TeamViewSet, ContributorViewSet, EndOfDayItemViewSet
 
 router = routers.DefaultRouter()
 router.register(r'teams', TeamViewSet)
 router.register(r'contributors', ContributorViewSet)
+router.register(r'eods', EndOfDayItemViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
