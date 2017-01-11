@@ -1,8 +1,12 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class Team(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    is_active = models.BooleanField(default=True)
+    email = models.EmailField()
 
     def __str__(self):
         return self.name
@@ -13,7 +17,7 @@ class Contributor(models.Model):
     last_name = models.CharField(max_length=30)
     display_name = models.CharField(max_length=30, unique=True)
     is_active = models.BooleanField(default=True)
-    team = models.ForeignKey(Team)
+    team = models.ManyToManyField(Team)
 
     def __str__(self):
         return self.display_name
@@ -33,8 +37,13 @@ class EndOfDayItem(models.Model):
         return self.story_id
 
 
+def _validate_known_type(value):
+    if value not in ['FIXED_TIME']:
+        raise ValidationError(_('%(value) is not a known type'), params={'value': value}, )
+
+
 class DispatchRule(models.Model):
-    type = models.CharField(max_length=30)
+    type = models.CharField(max_length=30, validators=[_validate_known_type])
     hour = models.IntegerField()
     minute = models.IntegerField()
     team = models.ForeignKey(Team)

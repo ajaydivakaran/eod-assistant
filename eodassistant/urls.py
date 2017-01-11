@@ -20,9 +20,9 @@ from rest_framework import routers
 from eod.views import TeamViewSet, ContributorViewSet, EndOfDayItemViewSet
 
 router = routers.DefaultRouter()
-router.register(r'teams', TeamViewSet)
-router.register(r'contributors', ContributorViewSet)
-router.register(r'eods', EndOfDayItemViewSet)
+router.register(r'team', TeamViewSet)
+router.register(r'contributor', ContributorViewSet)
+router.register(r'eod', EndOfDayItemViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
