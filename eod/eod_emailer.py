@@ -1,10 +1,21 @@
 import itertools
+import logging
 from datetime import datetime
+from logging import StreamHandler
+from logging.handlers import SysLogHandler
 
 from django.core.mail import send_mail
 
 from .models import get_not_sent_eod_items_for_teams, get_teams_with_matching_rule, mark_eod_items_as_sent, \
     get_active_teams
+
+logger = logging.getLogger("eod_emailer")
+logger.setLevel(logging.INFO)
+sys_log_handler = SysLogHandler(address='/dev/log')
+sys_log_handler.setFormatter(logging.Formatter('%(module)s.%(funcName)s: %(message)s'))
+logger.addHandler(sys_log_handler)
+stream_handler = StreamHandler()
+logger.addHandler(stream_handler)
 
 
 def _get_team_with_name(team_list, team_name):
@@ -17,8 +28,7 @@ def _get_team_with_name(team_list, team_name):
 def _send_eod_emails(teams_due_for_eod_mail_dispatch):
     eod_items = get_not_sent_eod_items_for_teams(teams_due_for_eod_mail_dispatch)
     if not eod_items:
-        return 'No eod items due for dispatch'
-    response = ''
+        logger.info('No eod items due for dispatch')
     for team_name, grouped_eod_items in itertools.groupby(eod_items, lambda eod_item: eod_item.team.name):
         team = _get_team_with_name(teams_due_for_eod_mail_dispatch, team_name)
         eod_item_list = list(grouped_eod_items)
@@ -26,17 +36,16 @@ def _send_eod_emails(teams_due_for_eod_mail_dispatch):
             send_mail('Eod mail', '%s items to be sent' % len(eod_item_list),
                       from_email='no-reply@eodassistant.com', recipient_list=[team.email])
             mark_eod_items_as_sent(eod_item_list)
-            response += 'Sent mail to %s with %s items' % (team.email, len(eod_item_list))
+            logger.info('Sent mail to %s with %s items' % (team.email, len(eod_item_list)))
         except Exception as e:
-            response += "Exception %s occurred while sending eod mail to %s" % (str(e), team.email)
-    return response
+            logger.error("Exception: [%s] occurred while sending eod mail to %s" % (str(e), team.email))
 
 
 def send_rule_based_eod_mails():
     teams_due_for_eod_mail_dispatch = get_teams_with_matching_rule(datetime.now())
-    return _send_eod_emails(teams_due_for_eod_mail_dispatch)
+    _send_eod_emails(teams_due_for_eod_mail_dispatch)
 
 
 def send_pending_eod_mails_for_team(team_name):
     teams_due_for_eod_mail_dispatch = list(filter(lambda team: team.name == team_name, get_active_teams()))
-    return _send_eod_emails(teams_due_for_eod_mail_dispatch)
+    _send_eod_emails(teams_due_for_eod_mail_dispatch)

@@ -10,4 +10,5 @@ class Command(BaseCommand):
         parser.add_argument('team_name')
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS(send_pending_eod_mails_for_team(options['team_name'])))
+        send_pending_eod_mails_for_team(options['team_name'])
+        self.stdout.write(self.style.SUCCESS('Done'))
