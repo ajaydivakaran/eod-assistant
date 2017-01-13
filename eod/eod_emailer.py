@@ -1,21 +1,11 @@
 import itertools
-import logging
 from datetime import datetime
-from logging import StreamHandler
-from logging.handlers import SysLogHandler
 
 from django.core.mail import send_mail
 
+from .logging import get_logger
 from .models import get_not_sent_eod_items_for_teams, get_teams_with_matching_rule, mark_eod_items_as_sent, \
     get_active_teams
-
-logger = logging.getLogger("eod_emailer")
-logger.setLevel(logging.INFO)
-sys_log_handler = SysLogHandler(address='/dev/log')
-sys_log_handler.setFormatter(logging.Formatter('%(module)s.%(funcName)s: %(message)s'))
-logger.addHandler(sys_log_handler)
-stream_handler = StreamHandler()
-logger.addHandler(stream_handler)
 
 
 def _get_team_with_name(team_list, team_name):
@@ -26,6 +16,7 @@ def _get_team_with_name(team_list, team_name):
 
 
 def _send_eod_emails(teams_due_for_eod_mail_dispatch):
+    logger = get_logger()
     eod_items = get_not_sent_eod_items_for_teams(teams_due_for_eod_mail_dispatch)
     if not eod_items:
         logger.info('No eod items due for dispatch')
