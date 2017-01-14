@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
 BUFFER_PERIOD_IN_SECONDS = 300
-FIXED_TIME_RULE = 'FIXED_TIME'
+FIXED_TIME_EOD_MAIL_RULE = 'FIXED_TIME_EOD_MAIL'
 
 
 def get_active_teams():
@@ -12,7 +13,7 @@ def get_active_teams():
 
 
 def get_not_sent_eod_items_for_teams(team_list):
-    return EndOfDayItem.objects.filter(is_sent=False, contributors__team__in=team_list)
+    return EndOfDayItem.objects.filter(is_sent=False, team__in=team_list)
 
 
 def _is_time_matching(rule, current_datetime):
@@ -21,8 +22,8 @@ def _is_time_matching(rule, current_datetime):
     return abs(timedelta.total_seconds()) <= BUFFER_PERIOD_IN_SECONDS
 
 
-def get_teams_with_matching_rule(current_datetime):
-    rules = DispatchRule.objects.filter(team__is_active=True, type=FIXED_TIME_RULE)
+def get_teams_with_matching_rule(current_datetime, rule_type):
+    rules = DispatchRule.objects.filter(team__is_active=True, type=rule_type)
     return [rule.team for rule in rules if _is_time_matching(rule, current_datetime)]
 
 
@@ -36,7 +37,9 @@ class Team(models.Model):
     name = models.CharField(max_length=50, unique=True)
     timezone = models.CharField(max_length=30, default='Asia/Kolkata')
     is_active = models.BooleanField(default=True)
+    reminder_active = models.BooleanField(default=False)
     email = models.EmailField()
+    user = models.OneToOneField(User)
 
     def __str__(self):
         return self.name
@@ -47,7 +50,8 @@ class Contributor(models.Model):
     last_name = models.CharField(max_length=30)
     display_name = models.CharField(max_length=30, unique=True)
     is_active = models.BooleanField(default=True)
-    team = models.ManyToManyField(Team)
+    teams = models.ManyToManyField(Team)
+    email = models.EmailField()
 
     def __str__(self):
         return self.display_name
@@ -62,15 +66,12 @@ class EndOfDayItem(models.Model):
     team = models.ForeignKey(Team)
     is_sent = models.BooleanField(default=False)
 
-    def get_contributors(self):
-        return [contributor.name for contributor in self.contributors.all()]
-
     def __str__(self):
         return self.story_id
 
 
 def _validate_known_type(value):
-    if value not in [FIXED_TIME_RULE]:
+    if value not in [FIXED_TIME_EOD_MAIL_RULE]:
         raise ValidationError("%s is not a known type" % value)
 
 

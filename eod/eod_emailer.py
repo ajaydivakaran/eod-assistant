@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 
 from .logging import get_logger
 from .models import get_not_sent_eod_items_for_teams, get_teams_with_matching_rule, mark_eod_items_as_sent, \
-    get_active_teams
+    get_active_teams, FIXED_TIME_EOD_MAIL_RULE
 
 
 def _get_team_with_name(team_list, team_name):
@@ -33,7 +33,7 @@ def _send_eod_emails(teams_due_for_eod_mail_dispatch):
 
 
 def send_rule_based_eod_mails():
-    teams_due_for_eod_mail_dispatch = get_teams_with_matching_rule(datetime.now())
+    teams_due_for_eod_mail_dispatch = get_teams_with_matching_rule(datetime.now(), FIXED_TIME_EOD_MAIL_RULE)
     _send_eod_emails(teams_due_for_eod_mail_dispatch)
 
 
