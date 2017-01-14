@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from eod.eod_emailer import send_pending_eod_mails_for_team
+from eod.eod_email import send_pending_eod_mails_for_team
 
 
 class Command(BaseCommand):

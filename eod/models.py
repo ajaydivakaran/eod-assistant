@@ -1,8 +1,8 @@
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+
+from .date import time_of_day
 
 BUFFER_PERIOD_IN_SECONDS = 300
 FIXED_TIME_EOD_MAIL_RULE = 'FIXED_TIME_EOD_MAIL'
@@ -17,8 +17,7 @@ def get_not_sent_eod_items_for_teams(team_list):
 
 
 def _is_time_matching(rule, current_datetime):
-    timedelta = (current_datetime - datetime(year=current_datetime.year, month=current_datetime.month,
-                                             day=current_datetime.day, hour=rule.hour, minute=rule.minute))
+    timedelta = (current_datetime - time_of_day(current_datetime, rule.hour, rule.minute))
     return abs(timedelta.total_seconds()) <= BUFFER_PERIOD_IN_SECONDS
 
 
@@ -65,6 +64,9 @@ class EndOfDayItem(models.Model):
     created_date = models.DateTimeField('End of day item done date', auto_now=True)
     team = models.ForeignKey(Team)
     is_sent = models.BooleanField(default=False)
+
+    def get_contributors(self):
+        return [contributor.first_name for contributor in self.contributors.all()]
 
     def __str__(self):
         return self.story_id

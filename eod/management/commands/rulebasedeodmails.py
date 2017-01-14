@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from eod.eod_emailer import send_rule_based_eod_mails
+from eod.eod_email import send_rule_based_eod_mails
 
 
 class Command(BaseCommand):

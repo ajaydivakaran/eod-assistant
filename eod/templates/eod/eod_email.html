@@ -1,0 +1,32 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
+</head>
+<body>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Story</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Contributors</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr scope="row">
+            <td>{{ item.story_id }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.get_contributors|join:", " }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
