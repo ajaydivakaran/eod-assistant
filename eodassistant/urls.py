@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
 
 from eod.views import TeamViewSet, ContributorViewSet, EndOfDayItemViewSet
@@ -29,3 +30,5 @@ urlpatterns = [
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
