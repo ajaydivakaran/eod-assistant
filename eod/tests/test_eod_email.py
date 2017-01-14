@@ -7,7 +7,7 @@ from django.test import TestCase
 from eod.eod_email import send_pending_eod_mails_for_team, send_rule_based_eod_mails
 
 
-class EodEmailerTestCase(TestCase):
+class EodEmailTestCase(TestCase):
     @patch('eod.eod_email.get_active_teams')
     @patch('eod.eod_email.get_logger', )
     @patch('eod.eod_email.get_not_sent_eod_items_for_teams')
