@@ -33,6 +33,7 @@ class EodEmailerTestCase(TestCase):
         get_active_teams_mock.assert_called_with()
         logger_instance_mock.info.assert_called_with('No eod items due for dispatch')
 
+    @patch('eod.eod_email.datetime')
     @patch('eod.eod_email.mark_eod_items_as_sent')
     @patch('eod.eod_email.get_active_teams')
     @patch('eod.eod_email.get_logger', )
@@ -41,7 +42,8 @@ class EodEmailerTestCase(TestCase):
                                                                              get_not_sent_eod_items_for_teams_mock,
                                                                              logger_mock,
                                                                              get_active_teams_mock,
-                                                                             mark_eod_items_as_sent_mock):
+                                                                             mark_eod_items_as_sent_mock,
+                                                                             datetime_mock):
         logger_instance_mock = MagicMock()
         logger_mock.return_value = logger_instance_mock
         team1 = MagicMock()
@@ -57,6 +59,7 @@ class EodEmailerTestCase(TestCase):
         get_active_teams_mock.return_value = [team1, team2]
         e1 = MagicMock(description='desc1', story_id='story_id1', status='status1', team=team1, contributors=[c1, c2])
         e2 = MagicMock(description='desc2', story_id='story_id2', status='status2', team=team1, contributors=[c2])
+        datetime_mock.now.return_value = datetime(2017, 1, 1, 10, 20, 30)
         eod_item_list = [e1, e2]
         get_not_sent_eod_items_for_teams_mock.return_value = eod_item_list
 
@@ -64,7 +67,7 @@ class EodEmailerTestCase(TestCase):
 
         mark_eod_items_as_sent_mock.assert_called_with(eod_item_list)
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, '14 January 2017 - team1 eod update')
+        self.assertEqual(mail.outbox[0].subject, '01 January 2017 - team1 eod update')
         self.assertEqual(mail.outbox[0].body, '')
         self.assertEqual(mail.outbox[0].from_email, 'no-reply@eodassistant.com')
         self.assertEqual(mail.outbox[0].recipients(), ['team1@mailinator.com'])
