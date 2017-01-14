@@ -1,26 +1,29 @@
 from datetime import datetime
 from unittest.mock import patch, MagicMock
 
-from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
 
 from eod.eod_emailer import send_pending_eod_mails_for_team, send_rule_based_eod_mails
-from eod.models import Team, Contributor
+from eod.models import Contributor
 
 
 class EodEmailerTestCase(TestCase):
     @patch('eod.eod_emailer.get_active_teams')
     @patch('eod.eod_emailer.get_logger', )
     @patch('eod.eod_emailer.get_not_sent_eod_items_for_teams')
-    def test_should_not_send_end_of_day_email_when_no_new_eod_items_present(self, get_not_sent_eod_items_for_teams_mock,
+    def test_should_not_send_end_of_day_email_when_no_new_eod_items_present(self,
+                                                                            get_not_sent_eod_items_for_teams_mock,
                                                                             logger_mock,
                                                                             get_active_teams_mock):
-        fake_user = User(username='user1')
         logger_instance_mock = MagicMock()
         logger_mock.return_value = logger_instance_mock
-        team1 = Team(name='team1', email='team1@mailinator.com', user=fake_user)
-        team2 = Team(name='team2', email='team2@mailinator.com', user=fake_user)
+        team1 = MagicMock()
+        team1.name = 'team1'
+        team1.email = 'team1@mailinator.com'
+        team2 = MagicMock()
+        team2.name = 'team2'
+        team2.email = 'team2@mailinator.com'
         get_active_teams_mock.return_value = [team1, team2]
         get_not_sent_eod_items_for_teams_mock.return_value = []
 
@@ -46,8 +49,8 @@ class EodEmailerTestCase(TestCase):
         team2 = MagicMock()
         team2.name = 'team2'
         team2.email = 'team2@mailinator.com'
-        c1 = Contributor(first_name='John', last_name='Doe')
-        c2 = Contributor(first_name='Jane', last_name='Doe')
+        c1 = MagicMock(first_name='John', last_name='Doe')
+        c2 = MagicMock(first_name='Jane', last_name='Doe')
         get_active_teams_mock.return_value = [team1, team2]
         e1 = MagicMock(description='desc1', story_id='story_id1', status='status1', team=team1, contributors=[c1, c2])
         e2 = MagicMock(description='desc2', story_id='story_id2', status='status2', team=team1, contributors=[c2])
