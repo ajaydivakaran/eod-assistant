@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&pxwq%*6^w@y6hc(*n3c6g8lfs9m9*tw0jj*!xjh6evp8r!4p('
+SECRET_KEY = os.getenv('SECRET_KEY', '&pxwq%*6^w@y6hc(*n3c6g8lfs9m9*tw0jj*!xjh6evp8r!4p(')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if os.getenv('NO_DEBUG') else True
 
 ALLOWED_HOSTS = []
 
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'eodassistant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'eodassistant',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'eodassistant'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
