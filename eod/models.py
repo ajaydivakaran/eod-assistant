@@ -38,7 +38,7 @@ class Team(models.Model):
     is_active = models.BooleanField(default=True)
     reminder_active = models.BooleanField(default=False)
     email = models.EmailField()
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User)
 
     def __str__(self):
         return self.name
