@@ -8,3 +8,10 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=eodassistant
+  postfix:
+    image: catatnight/postfix
+    ports:
+      - "25:25"
+    environment:
+      - maildomain=eodassistant.com
+      - smtp_user=mailuser:password123
