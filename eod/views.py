@@ -12,14 +12,24 @@ HTML_CONTENT_TYPE = 'text/html'
 
 
 class TeamViewSet(viewsets.ModelViewSet):
-    permission_classes = (StaffWritePermission,)
+    permission_classes = (StaffWritePermission, IsAuthenticated)
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Team.objects.all()
+        return Team.objects.filter(user=self.request.user)
+
 
 class ContributorViewSet(viewsets.ModelViewSet):
-    permission_classes = (StaffWritePermission,)
+    permission_classes = (StaffWritePermission, IsAuthenticated)
     queryset = Contributor.objects.all()
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Contributor.objects.all()
+        return Contributor.objects.filter(teams__user=self.request.user)
 
     def get_serializer_class(self):
         if self.request.content_type == HTML_CONTENT_TYPE or self.request.method == GET_METHOD:
@@ -29,7 +39,6 @@ class ContributorViewSet(viewsets.ModelViewSet):
 
 class EndOfDayItemViewSet(viewsets.ModelViewSet):
     permission_classes = (TeamEditOnly, IsAuthenticated)
-    queryset = EndOfDayItem.objects.all()
 
     def get_queryset(self):
         if self.request.user.is_staff:

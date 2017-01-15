@@ -23,7 +23,7 @@ from eod.views import TeamViewSet, ContributorViewSet, EndOfDayItemViewSet
 router = routers.DefaultRouter()
 router.register(r'team', TeamViewSet)
 router.register(r'contributor', ContributorViewSet)
-router.register(r'eod', EndOfDayItemViewSet)
+router.register(r'eod', EndOfDayItemViewSet, base_name='eod-list')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
