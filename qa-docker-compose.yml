@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    build: .
+    depends_on:
+      - db
+      - postfix
+    ports:
+      - "8000:8000"
+    environment:
+      - EMAIL_HOST=postfix
+      - EMAIL_PORT=25
+      - EMAIL_USER=mailuser
+      - EMAIL_PASSWORD=password123
+      - DB_HOST=db
+      - ALLOWED_HOSTS=*
+      - NO_DEBUG=true
+  db:
+    image: postgres:9.6.1
+    volumes:
+      -  /tmp/qa-eod-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=eodassistant
+  postfix:
+    image: catatnight/postfix
+    environment:
+      - maildomain=eodassistant.qa
+      - smtp_user=mailuser:password123
