@@ -1,14 +1,11 @@
-{% load staticfiles %}
-{% load i18n %}
-{% load rest_framework %}
-
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-<table class="table table-sm table-bordered">
+<table class="table table-bordered">
     <thead>
     <tr>
         <th>Story</th>
@@ -19,7 +16,7 @@
     </thead>
     <tbody>
     {% for item in items %}
-        <tr scope="row">
+        <tr>
             <td>{{ item.story_id }}</td>
             <td>{{ item.description }}</td>
             <td>{{ item.status }}</td>
