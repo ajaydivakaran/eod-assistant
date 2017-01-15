@@ -1,3 +1,4 @@
+import pytz
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -32,9 +33,14 @@ def mark_eod_items_as_sent(eod_items):
         eod_item.save()
 
 
+def _validate_known_timezone(value):
+    if value not in pytz.all_timezones:
+        raise ValidationError("%s is not a known timezone" % value)
+
+
 class Team(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    timezone = models.CharField(max_length=30, default='Asia/Kolkata')
+    timezone = models.CharField(max_length=30, default='Asia/Kolkata', validators=[_validate_known_timezone])
     is_active = models.BooleanField(default=True)
     reminder_active = models.BooleanField(default=False)
     email = models.EmailField()
