@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Team, Contributor, EndOfDayItem
+from .relations import ContributorsPrimaryKeyRelatedField, TeamsPrimaryKeyRelatedField
 
 
 class TeamSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,7 +13,7 @@ class TeamSerializer(serializers.HyperlinkedModelSerializer):
 class ContributorHyperlinkedRelationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contributor
-        fields = ('id', 'first_name', 'last_name', 'display_name', 'is_active', 'team')
+        fields = ('id', 'first_name', 'last_name', 'display_name', 'is_active', 'teams')
 
 
 class ContributorPrimaryKeyRelationSerializer(ContributorHyperlinkedRelationSerializer):
@@ -26,5 +27,5 @@ class EndOfDayItemHyperlinkedRelationSerializer(serializers.HyperlinkedModelSeri
 
 
 class EndOfDayItemPrimaryKeyRelationSerializer(EndOfDayItemHyperlinkedRelationSerializer):
-    contributors = serializers.PrimaryKeyRelatedField(many=True, queryset=Contributor.objects.all())
-    team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all())
+    contributors = ContributorsPrimaryKeyRelatedField(many=True)
+    team = TeamsPrimaryKeyRelatedField()
