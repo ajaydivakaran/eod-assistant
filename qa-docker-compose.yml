@@ -2,6 +2,7 @@ version: '2'
 services:
   app:
     build: .
+    restart: unless-stopped
     depends_on:
       - db
       - postfix
@@ -17,12 +18,14 @@ services:
       - NO_DEBUG=true
   db:
     image: postgres:9.6.1
+    restart: unless-stopped
     volumes:
       -  /tmp/qa-eod-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=eodassistant
   postfix:
     image: catatnight/postfix
+    restart: unless-stopped
     environment:
       - maildomain=eodassistant.qa
       - smtp_user=mailuser:password123
