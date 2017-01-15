@@ -8,6 +8,8 @@ touch $logpath/access.log
 touch $logpath/error.log
 tail -n 0 -f $logpath/*.log &
 
+/usr/sbin/crond -l 8
+
 echo Starting Gunicorn.
 exec gunicorn eodassistant.wsgi \
     --name eod_assistant \

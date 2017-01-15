@@ -1,0 +1,1 @@
+*/30 * * * * python /app/manage.py rulebasedeodmails >> /var/log/cron/script.log
