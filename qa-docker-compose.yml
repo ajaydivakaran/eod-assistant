@@ -16,6 +16,7 @@ services:
       - DB_HOST=db
       - ALLOWED_HOSTS=*
       - NO_DEBUG=true
+      - FROM_EMAIL=no-reply@eodassistant.qa
   db:
     image: postgres:9.6.1
     restart: unless-stopped
