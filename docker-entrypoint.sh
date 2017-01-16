@@ -1,5 +1,6 @@
 #!/bin/sh
 
+sleep 30s #hack to wait for db to be available
 python manage.py migrate
 python manage.py collectstatic --noinput
 logpath=/var/log/gunicorn
