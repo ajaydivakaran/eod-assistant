@@ -15,7 +15,7 @@ echo Starting Gunicorn.
 exec gunicorn eodassistant.wsgi \
     --name eod_assistant \
     --bind 0.0.0.0:8000 \
-    --max-requests 30 \
+    --max-requests 3000 \
     --threads 5 \
     --log-level=info \
     --log-file=$logpath/gunicorn.log \
